@@ -1,7 +1,7 @@
 # Step (0) Load libraries, find folders, download and extract raw data, 
 #          and read into local tables
 
-library(tidyverse); 
+library(tidyverse); library(tools)
 # getwd()
 # if(!file.exists("./project/data")){dir.create("./project/data")}
 # fileUrl <- "https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip"
@@ -29,27 +29,41 @@ comb_y <- rbind(train_y, test_y)
 comb_x <- rbind(train_x, test_x)
 
 # check dimensions
-dim(comb_subj)
-dim(comb_y)
-dim(comb_x)
-head(comb_subj)
-head(comb_y)
-head(comb_x)
+dim(comb_subj); dim(comb_y); dim(comb_x)
+head(comb_subj); head(comb_y); head(comb_x)
 names(comb_x)
 
 names(comb_subj)[1] <- "subject"
 names(comb_y) <- "activity"
+
+
 # Note: Feature name assigment not working because of duplicate names?? make.names maybe? 
 # so delay till after merge I guess... 
-names(comb_x) <- make.names(feat_labels$V2)
+# names(comb_x) <- make.names(feat_labels$V2)
+# assume for now the angle columns which have "Mean" should be excluded
+qualMeanCols <- grep("mean", feat_labels[, 2]); length(qualMeanCols)
+qualStdCols <- grep("[S|s]td", feat_labels[, 2]); length(qualStdCols)
+# combine into one vector and re-order ascending
+qualCols <- sort(c(qualMeanCols, qualStdCols)) 
+# examining qualCols, "-" and "()" are the invalid characters for vector names
+# and "-" appears in front of Std, Mean, and XYZ coordinates
+qualFeatLabels <- gsub("[-\\(\\)]", "", toTitleCase(as.character(feat_labels[qualCols, 2])))
 
-qualMeanCols <- grep("[M|m]ean", feat_labels[, 2])
-length(qualMeanCols)
-qualStdCols <- grep("[S|s]td", feat_labels[, 2])
-length(qualStdCols)
+# Select qualCols from comb_x, then bind with comb_subj, comb_y
+sel_x <- comb_x[qualCols]; dim(sel_x)
+comb_sel <- cbind(comb_subj, comb_y, sel_x) 
+# Attach corresponding feature labels
+colnames(comb_sel) <- c("subject", "origSet", "activity", qualFeatLabels)
+names(comb_sel)
+
+# can backreferences be evaluated before passing into string function for gsub
+# length(grep("-[mean|std|X|Y|Z]", qualFeatLabels))
+# gsub("-mean", "Mean", qualFeatLabels[1:3])
+# grep("-([mean|std])", qualFeatLabels[1:3])
+# gsub("-([X|Y|Z])", tolower((" \\1")), qualFeatLabels[1:3])
 
 
-feat_labels[qualMeanCols, 2]
+feat_labels[qualCols, 2]
 feat_labels[qualStdCols, 2]
 tryNames <- make.names(feat_labels[, 2])
 unique(tryNames)
