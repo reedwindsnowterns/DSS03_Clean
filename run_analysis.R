@@ -21,18 +21,37 @@ test_x <- read.table("./project/data/getdata_projectfiles_UCI HAR Dataset/UCI HA
 feat_labels <- read.table("./project/data/getdata_projectfiles_UCI HAR Dataset/UCI HAR Dataset/features.txt")
 acty_labels <- read.table("./project/data/getdata_projectfiles_UCI HAR Dataset/UCI HAR Dataset/activity_labels.txt")
 
-names(trainSubjData) <- names(testSubjData) <- "Subject"
-names(trainXData) <- names(testXData) <- featureNames$V2
-names(trainYData) <- names(testYData) <- "Activity"
+# Step (1) Merge data from local tables
+train_subj <- mutate(train_subj, origSet = "train")
+test_subj <- mutate(test_subj, origSet = "test")
+comb_subj <- rbind(train_subj, test_subj)
+comb_y <- rbind(train_y, test_y)
+comb_x <- rbind(train_x, test_x)
 
-?grep
-qualMeanCols <- grep("[M|m]ean", featureNames[, 2])
+# check dimensions
+dim(comb_subj)
+dim(comb_y)
+dim(comb_x)
+head(comb_subj)
+head(comb_y)
+head(comb_x)
+names(comb_x)
+
+names(comb_subj)[1] <- "subject"
+names(comb_y) <- "activity"
+# Note: Feature name assigment not working because of duplicate names?? make.names maybe? 
+# so delay till after merge I guess... 
+names(comb_x) <- make.names(feat_labels$V2)
+
+qualMeanCols <- grep("[M|m]ean", feat_labels[, 2])
 length(qualMeanCols)
-qualStdCols <- grep("[S|s]td", featureNames[, 2])
+qualStdCols <- grep("[S|s]td", feat_labels[, 2])
 length(qualStdCols)
-featureNames[qualMeanCols, 2]
-featureNames[qualStdCols, 2]
-tryNames <- make.names(featureNames[, 2])
+
+
+feat_labels[qualMeanCols, 2]
+feat_labels[qualStdCols, 2]
+tryNames <- make.names(feat_labels[, 2])
 unique(tryNames)
 
 ?gsub
