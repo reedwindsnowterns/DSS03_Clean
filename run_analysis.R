@@ -56,6 +56,11 @@ comb_sel <- cbind(comb_subj, comb_y, sel_x)
 colnames(comb_sel) <- c("subject", "origSet", "activity", qualFeatLabels)
 names(comb_sel)
 
+# Re-factorize subject and activity data
+comb_sel$subject <- as.factor(comb_sel$subject)
+comb_sel$activity <- as.factor(comb_sel$activity, levels = acty_labels[, 1], labels = acty_labels[, 2])
+?as.factor
+
 # can backreferences be evaluated before passing into string function for gsub
 # length(grep("-[mean|std|X|Y|Z]", qualFeatLabels))
 # gsub("-mean", "Mean", qualFeatLabels[1:3])
