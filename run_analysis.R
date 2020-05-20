@@ -88,3 +88,8 @@ trainData[1:3, 1:8]
 testData[2944:2946, 557:564]
 trainData[7349:7351, 557:564]
 
+
+# apply column names to comb_x use grep, maybe gsub to change relevant column names?
+# cbind comb_subj, comb_y, comb_x
+# 
+# Create Tidy Data set
