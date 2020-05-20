@@ -8,18 +8,18 @@ library(tidyverse);
 # download.file(fileUrl, destfile = "./project/data/getdata_projectfiles_UCI HAR Dataset.zip", method = "curl")
 
 
-trainSubjData <- read.table("./project/data/getdata_projectfiles_UCI HAR Dataset/UCI HAR Dataset/train/subject_train.txt")
-trainYData <- read.table("./project/data/getdata_projectfiles_UCI HAR Dataset/UCI HAR Dataset/train/y_train.txt")
-trainXData <- read.table("./project/data/getdata_projectfiles_UCI HAR Dataset/UCI HAR Dataset/train/X_train.txt")
+train_subj <- read.table("./project/data/getdata_projectfiles_UCI HAR Dataset/UCI HAR Dataset/train/subject_train.txt")
+train_y <- read.table("./project/data/getdata_projectfiles_UCI HAR Dataset/UCI HAR Dataset/train/y_train.txt")
+train_x <- read.table("./project/data/getdata_projectfiles_UCI HAR Dataset/UCI HAR Dataset/train/X_train.txt")
 
-testSubjData <- read.table("./project/data/getdata_projectfiles_UCI HAR Dataset/UCI HAR Dataset/test/subject_test.txt")
-testYData <- read.table("./project/data/getdata_projectfiles_UCI HAR Dataset/UCI HAR Dataset/test/y_test.txt")
-testXData <- read.table("./project/data/getdata_projectfiles_UCI HAR Dataset/UCI HAR Dataset/test/X_test.txt")
+test_subj <- read.table("./project/data/getdata_projectfiles_UCI HAR Dataset/UCI HAR Dataset/test/subject_test.txt")
+test_y <- read.table("./project/data/getdata_projectfiles_UCI HAR Dataset/UCI HAR Dataset/test/y_test.txt")
+test_x <- read.table("./project/data/getdata_projectfiles_UCI HAR Dataset/UCI HAR Dataset/test/X_test.txt")
 
         # read feature names and activity assignments into local tables
 
-featureNames <- read.table("./project/data/getdata_projectfiles_UCI HAR Dataset/UCI HAR Dataset/features.txt")
-activities <- read.table("./project/data/getdata_projectfiles_UCI HAR Dataset/UCI HAR Dataset/activity_labels.txt")
+feat_labels <- read.table("./project/data/getdata_projectfiles_UCI HAR Dataset/UCI HAR Dataset/features.txt")
+acty_labels <- read.table("./project/data/getdata_projectfiles_UCI HAR Dataset/UCI HAR Dataset/activity_labels.txt")
 
 names(trainSubjData) <- names(testSubjData) <- "Subject"
 names(trainXData) <- names(testXData) <- featureNames$V2
