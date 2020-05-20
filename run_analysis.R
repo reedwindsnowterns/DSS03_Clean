@@ -1,7 +1,7 @@
 # Step (0) Load libraries, find folders, download and extract raw data, 
 #          and read into local tables
 
-library(tidyverse); library(tools)
+library(tidyverse); library(tools); library(reshape2)
 # getwd()
 # if(!file.exists("./project/data")){dir.create("./project/data")}
 # fileUrl <- "https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip"
@@ -36,6 +36,7 @@ names(comb_x)
 names(comb_subj)[1] <- "subject"
 names(comb_y) <- "activity"
 
+# apply column names to comb_x use grep, maybe gsub to change relevant column names?
 
 # Note: Feature name assigment not working because of duplicate names?? make.names maybe? 
 # so delay till after merge I guess... 
@@ -48,8 +49,11 @@ qualCols <- sort(c(qualMeanCols, qualStdCols))
 # examining qualCols, "-" and "()" are the invalid characters for vector names
 # and "-" appears in front of Std, Mean, and XYZ coordinates
 qualFeatLabels <- gsub("[-\\(\\)]", "", toTitleCase(as.character(feat_labels[qualCols, 2])))
+qualFeatLabels <- gsub("mean", "Mean", qualFeatLabels)
+
 
 # Select qualCols from comb_x, then bind with comb_subj, comb_y
+# cbind comb_subj, comb_y, comb_x
 sel_x <- comb_x[qualCols]; dim(sel_x)
 comb_sel <- cbind(comb_subj, comb_y, sel_x) 
 # Attach corresponding feature labels
@@ -58,8 +62,13 @@ names(comb_sel)
 
 # Re-factorize subject and activity data
 comb_sel$subject <- as.factor(comb_sel$subject)
-comb_sel$activity <- as.factor(comb_sel$activity, levels = acty_labels[, 1], labels = acty_labels[, 2])
-?as.factor
+comb_sel$activity <- factor(comb_sel$activity, levels = acty_labels[, 1], labels = acty_labels[, 2])
+
+comb_melt <- melt(comb_sel, id = c("subject", "activity", "origSet"))
+comb_tidy <- dcast(comb_melt, subject + activity ~ variable, mean)
+
+# Create Tidy Data set
+write.table(comb_tidy, file = "./project/data/tidy_data.txt")
 
 # can backreferences be evaluated before passing into string function for gsub
 # length(grep("-[mean|std|X|Y|Z]", qualFeatLabels))
@@ -108,7 +117,3 @@ testData[2944:2946, 557:564]
 trainData[7349:7351, 557:564]
 
 
-# apply column names to comb_x use grep, maybe gsub to change relevant column names?
-# cbind comb_subj, comb_y, comb_x
-# 
-# Create Tidy Data set
