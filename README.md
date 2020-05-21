@@ -12,9 +12,9 @@ The pertinent data was gathered into [a vast and comprehensive dataset] (https:/
 5. From the data set in step 4, creates a second, independent tidy data set with the average of each variable for each activity and each subject.
 
 ## Placement and Execution
-1. The script ```run_analysis``` expects a working directory to be one able to accomodate a ```/project/data``` folder, to which the zip archive referenced above will be downloaded. 
-2. Accordingly, ```run_analysis.R``` should be placed in the parent directory to ```/project```
-3. Run ```run_analysis.R```, which will read in all the relevant data files, qualify and bind the requisite fields for output, aggregate, and output the result. 
+1. The script `run_analysis` expects a working directory to be one able to accomodate a `/project/data` folder, to which the zip archive referenced above will be downloaded. 
+2. Accordingly, `run_analysis.R` should be placed in the parent directory to `/project`
+3. Run `run_analysis.R`, which will read in all the relevant data files, qualify and bind the requisite fields for output, aggregate, and output the result. 
 4. Its output, `tidy_data.txt` will be written to /project/data. 
 
 ## Dependencies
