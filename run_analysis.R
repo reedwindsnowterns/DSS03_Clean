@@ -1,27 +1,52 @@
-# Step (0) Load libraries, find folders, download and extract raw data, 
-#          and read into local tables
-
+# (0) Load libraries, find folders, download and extract raw data, 
+#     and read into local tables
 library(tidyverse); library(tools); library(reshape2)
-# getwd()
-# if(!file.exists("./project/data")){dir.create("./project/data")}
-# fileUrl <- "https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip"
-# download.file(fileUrl, destfile = "./project/data/getdata_projectfiles_UCI HAR Dataset.zip", method = "curl")
 
+# pre-name input/output directories
+dir_proj <- "./project"
+dir_data <- paste(dir_proj, "/data", sep = "")
+dir_out <- paste(dir_proj, "/out", sep = "")
 
-train_subj <- read.table("./project/data/getdata_projectfiles_UCI HAR Dataset/UCI HAR Dataset/train/subject_train.txt")
-train_y <- read.table("./project/data/getdata_projectfiles_UCI HAR Dataset/UCI HAR Dataset/train/y_train.txt")
-train_x <- read.table("./project/data/getdata_projectfiles_UCI HAR Dataset/UCI HAR Dataset/train/X_train.txt")
+# create variable and path names for UCI HAR zip file
+fileUrl <- "https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip"
+loc_zip <- "UCIHAR.zip"
+loc_zip_pathname <- paste(dir_data, "/", loc_zip, sep = "")
 
-test_subj <- read.table("./project/data/getdata_projectfiles_UCI HAR Dataset/UCI HAR Dataset/test/subject_test.txt")
-test_y <- read.table("./project/data/getdata_projectfiles_UCI HAR Dataset/UCI HAR Dataset/test/y_test.txt")
-test_x <- read.table("./project/data/getdata_projectfiles_UCI HAR Dataset/UCI HAR Dataset/test/X_test.txt")
+# form & create input/output directories
+if(!file.exists(dir_proj)) { 
+        dir.create(dir_proj)
+        if(!file.exists(dir_data)) { 
+                dir.create(dir_data)
+                download.file(fileUrl, 
+                              destfile = loc_zip_pathname,
+                              method = "curl")
+                unzip(loc_zip_pathname, exdir = dir_data)
+        }
+        if(!file.exists(dir_out)) { 
+                dir.create(dir_out)
+        }
+}
 
-        # read feature names and activity assignments into local tables
+# form directory paths based on new extracted file structure
+dir_UCIHAR <- paste(dir_data, "/UCI HAR Dataset", sep ="")
+dir_train <- paste(dir_UCIHAR, "/train", sep ="")
+dir_test <- paste(dir_UCIHAR, "/test", sep ="")
 
-feat_labels <- read.table("./project/data/getdata_projectfiles_UCI HAR Dataset/UCI HAR Dataset/features.txt")
-acty_labels <- read.table("./project/data/getdata_projectfiles_UCI HAR Dataset/UCI HAR Dataset/activity_labels.txt")
+# load training data triad: subject, activity, kinematic data
+train_subj <- read.table(paste(dir_train, "/", "subject_train.txt", sep = ""))
+train_y <- read.table(paste(dir_train, "/", "y_train.txt", sep = ""))
+train_x <- read.table(paste(dir_train, "/", "X_train.txt", sep = ""))
 
-# Step (1) Merge data from local tables
+# load testing data triad: subject, activity, kinematic data
+test_subj <- read.table(paste(dir_test, "/", "subject_test.txt", sep = ""))
+test_y <- read.table(paste(dir_test, "/", "y_test.txt", sep = ""))
+test_x <- read.table(paste(dir_test, "/", "X_test.txt", sep = ""))
+
+# load feature names and activity assignments into local tables
+feat_labels <- read.table(paste(dir_UCIHAR, "/", "features.txt", sep = ""))
+acty_labels <- read.table(paste(dir_UCIHAR, "/", "activity_labels.txt", sep = ""))
+
+# (1) Merge data from local tables
 train_subj <- mutate(train_subj, origSet = "train")
 test_subj <- mutate(test_subj, origSet = "test")
 comb_subj <- rbind(train_subj, test_subj)

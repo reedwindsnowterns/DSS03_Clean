@@ -24,7 +24,7 @@ Two folders of 'Inertial Signals' corresponding respectively to the train and te
 ## Processing Synopsis
 0. Load libraries, orient folders, download and extract necessary files, read into local tables
 1. Merge together corresponding local tables across the test and train triads via rbind() into combined data sets (e.g. comb_x for X_train + X_test)
-2. Extract the feature names, use their indices to qualify relevant fields in comb_x and reformat them, apply the feature names to them, and combine them with the 
+2. Extract the feature names, use their indices to qualify the `mean` and `std` fields in comb_x and reformat them, apply the feature names to them, and combine them with the activity and subject data. 
 3. Re-factorize the activity names and subject codes to make the fields more useful within the ultimate tidy dataset, since they are ultimately going to be group_by-summarize / melt-dcast categories as opposed to numeric operands. 
 4. `melt()` and `dcast()` the data by subject and activity. 
 5. Output data and write to `.txt` file. 
